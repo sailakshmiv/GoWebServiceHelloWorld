@@ -2,16 +2,19 @@ package main
 
 import (
 	"fmt"
-	"html"
-	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
-	})
+	http.HandleFunc("/", hello)
+	fmt.Println("listening...")
+	err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+	if err != nil {
+		panic(err)
+	}
+}
 
-	log.Fatal(http.ListenAndServe(":80", nil))
-
+func hello(res http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(res, "hello, world")
 }
